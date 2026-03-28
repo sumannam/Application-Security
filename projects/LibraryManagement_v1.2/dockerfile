@@ -1,0 +1,25 @@
+# docker build -t library-management-v1_2 .
+
+# 1단계: 빌드 스테이지
+FROM bellsoft/liberica-openjdk-debian:23 AS build
+WORKDIR /app
+
+# 모든 파일 복사 (lib 폴더 포함)
+COPY . .
+
+# bin 폴더 생성 및 컴파일
+# -cp 옵션으로 lib 폴더 내의 모든 jar 파일을 클래스패스에 추가합니다.
+RUN mkdir -p bin
+RUN javac -d bin -encoding UTF-8 -cp "lib/*:." src/*.java
+
+# 2단계: 실행 스테이지
+FROM bellsoft/liberica-openjdk-debian:23
+WORKDIR /app
+
+# 빌드 결과물 및 라이브러리 복사
+COPY --from=build /app/bin ./bin
+COPY --from=build /app/lib ./lib
+
+# 실행 시 클래스패스(-cp)를 지정하여 메인 클래스 실행
+# bin 폴더와 lib 안의 모든 jar 파일을 포함해야 합니다.
+ENTRYPOINT ["java", "-cp", "bin:lib/*", "LibraryMain"]
