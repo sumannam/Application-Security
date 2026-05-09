@@ -189,6 +189,9 @@ public class LibraryMain {
                     book.setTitle(newTitle);
                     System.out.println("[결과] 제목이 수정되었습니다.");
                 }
+
+                // DB 저장
+                manager.saveChanges();
             }
             case 2 -> {
                 System.out.print("- 새 저자 입력: ");
@@ -197,17 +200,18 @@ public class LibraryMain {
                     book.setAuthor(newAuthor);
                     System.out.println("[결과] 저자명이 수정되었습니다.");
                 }
+
+                // DB 저장
+                manager.saveChanges();
             }
             case 3 -> {
                 manager.deleteBook(id);
                 System.out.println("[결과] 삭제되었습니다.");
 
-
             }
         }
 
-        // DB 저장
-        manager.saveChanges();
+
     }
 
     /**
